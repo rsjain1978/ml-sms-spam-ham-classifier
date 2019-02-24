@@ -14,8 +14,12 @@ from sklearn.metrics import classification_report
 
 def loadDataset():
     #load spam data file
-    df = pd.read_csv('spam.csv', encoding="ISO-8859-1")
+    df = pd.read_csv('spam.csv', encoding="latin-1")
     df = df.rename(columns={'v1':'label', 'v2':'sms'})
+    cols=['label','sms']
+    df=df[cols]
+    df = df.dropna(axis=0, how='any')
+
     return df
 
 # This function shows how the Spam and Ham messages are distributed.
@@ -106,6 +110,8 @@ def runSVMClassifier(trainX, testX, trainY, testY):
 
     printSVMModelPerformance(classifier, modelScore, trainX_cv, testY, predictedY)
 
+    return modelScore
+
 from sklearn.model_selection import KFold
 def runClassifier(validation_method):
 
@@ -121,8 +127,8 @@ def runClassifier(validation_method):
     df=df[columns]
 
     #convert the labels to 0 and 1 values
-    df.loc[df['label']=='ham','label']=0
-    df.loc[df['label']=='spam','label']=1
+    #df.loc[df['label']=='ham','label']=0
+    #df.loc[df['label']=='spam','label']=1
 
     if (validation_method==0):
         
@@ -160,7 +166,7 @@ def processChoice(choice):
     if (choice ==2):
         printFrequentWordsDistribution()
     if (choice ==3):
-        runClassifier(validation_method=2)
+        runClassifier(validation_method=0)
     if (choice ==4):
         runClassifier(validation_method=1)
     else :
